@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOH Drug Testing Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a3a5f; /* Navy Blue */
+      --primary-dark: #0f2a4a; /* Dark Navy */
+      --primary-light: #2a4d7a; /* Light Navy */
+      --secondary: #4a90a4; /* Steel Blue */
+      --secondary-dark: #3a7586; /* Dark Steel Blue */
+      --accent: #6c8eb0; /* Silver Blue */
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+      --gray: #5d6d7e;
+      --border: #dee2e6;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --info: #17a2b8;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Login Screen */
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;
+      margin: 0 auto 20px;
+      box-shadow: 0 5px 15px rgba(26, 58, 95, 0.3);
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-title h1 {
+      font-size: 24px;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .login-title p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(26, 58, 95, 0.3);
+    }
+
+    .system-title h1 {
+      font-size: 24px;
+      color: var(--dark);
+    }
+
+    .system-title p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .user-info {
+      text-align: right;
+      margin-right: 15px;
+    }
+
+    .user-info strong {
+      display: block;
+      color: var(--dark);
+    }
+
+    .user-info span {
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      overflow-x: auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 18px 20px;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--gray);
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.3s;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-tab:hover {
+      background: rgba(26, 58, 95, 0.05);
+      color: var(--primary);
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    /* Content Area */
+    .content {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      min-height: 500px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dashboard Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 25px;
+      border-radius: 12px;
+      color: white;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .stat-card.success { background: linear-gradient(135deg, var(--success) 0%, #20c997 100%); }
+    .stat-card.warning { background: linear-gradient(135deg, var(--warning) 0%, #ff9800 100%); }
+    .stat-card.danger { background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%); }
+    .stat-card.info { background: linear-gradient(135deg, var(--info) 0%, #138496 100%); }
+
+    .stat-card h3 {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card .number {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--danger);
+    }
+
+    input, select, textarea {
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background: white;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(26, 58, 95, 0.3);
+    }
+
+    .btn-success { 
+      background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+      color: white;
+    }
+    .btn-success:hover { 
+      background: linear-gradient(135deg, #218838 0%, var(--success) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-danger { 
+      background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+      color: white;
+    }
+    .btn-danger:hover { 
+      background: linear-gradient(135deg, #c82333 0%, var(--danger) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-warning { 
+      background: linear-gradient(135deg, var(--warning) 0%, #ff9800 100%);
+      color: #000;
+    }
+    .btn-warning:hover { 
+      background: linear-gradient(135deg, #e0a800 0%, var(--warning) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-secondary { 
+      background: linear-gradient(135deg, var(--gray) 0%, #5a6268 100%);
+      color: white;
+    }
+    .btn-secondary:hover { 
+      background: linear-gradient(135deg, #5a6268 0%, var(--gray) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .btn-info { 
+      background: linear-gradient(135deg, var(--info) 0%, #138496 100%);
+      color: white;
+    }
+    .btn-info:hover { 
+      background: linear-gradient(135deg, #138496 0%, var(--info) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: linear-gradient(to right, var(--primary-light), var(--accent));
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr:hover {
+      background: rgba(26, 58, 95, 0.03);
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success { background: #d4edda; color: #155724; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-secondary { background: #e2e3e5; color: #383d41; }
+    .badge-primary { background: #cce5ff; color: #004085; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .modal-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to right, var(--primary-light), var(--accent));
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .modal-footer {
+      padding: 20px 30px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .close {
+      cursor: pointer;
+      font-size: 28px;
+      color: white;
+      transition: color 0.3s;
+    }
+
+    .close:hover {
+      color: var(--danger);
+    }
+
+    /* Search and Filter */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    /* Alert Messages */
+    .alert {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid;
+    }
+
+    .alert-success { background: #d4edda; color: #155724; border-left-color: var(--success); }
+    .alert-warning { background: #fff3cd; color: #856404; border-left-color: var(--warning); }
+    .alert-danger { background: #f8d7da; color: #721c24; border-left-color: var(--danger); }
+    .alert-info { background: #d1ecf1; color: #0c5460; border-left-color: var(--info); }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .timeline-content {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    /* Appointment Card */
+    .appointment-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .appointment-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .appointment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .appointment-date {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .appointment-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray);
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      margin-bottom: 20px;
+    }
+
+    /* Result Card */
+    .result-card {
+      background: white;
+      border-left: 4px solid var(--info);
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .result-card.negative {
+      border-left-color: var(--success);
+    }
+
+    .result-card.positive {
+      border-left-color: var(--danger);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .result-substances {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .substance-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .substance-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+
+      .header-right {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .user-info {
+        text-align: center;
+        margin-right: 0;
+      }
+
+      .nav-tabs {
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-bar {
+        flex-direction: column;
+      }
+
+      .search-bar input {
+        min-width: 100%;
+      }
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-container">
+    <div class="login-box">
+      <div class="login-logo">🏥</div>
+      <div class="login-title">
+        <h1>DOH Drug Testing System</h1>
+        <p>Department of Health Accredited</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="Enter your password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 20px;">
+          Login
+        </button>
+      </form>
+      <div style="margin-top: 20px; text-align: center; color: var(--gray); font-size: 13px;">
+        <p><strong>Demo Credentials:</strong></p>
+        <p>Admin: admin@doh.ph / admin123</p>
+        <p>User: user@test.ph / user123</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App (Hidden initially) -->
+  <div id="mainApp" class="container hidden">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">🏥</div>
+        <div class="system-title">
+          <h1>DOH Drug Testing System</h1>
+          <p>Department of Health Accredited</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <strong id="currentUser">User</strong>
+          <span id="userRole">Role</span>
+        </div>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- Admin Navigation -->
+    <div id="adminNav" class="nav-tabs hidden">
+      <button class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="nav-tab" onclick="switchTab('orders')">Test Orders</button>
+      <button class="nav-tab" onclick="switchTab('collection')">Specimen Collection</button>
+      <button class="nav-tab" onclick="switchTab('results')">Results & MRO</button>
+      <button class="nav-tab" onclick="switchTab('reports')">DOH Reports</button>
+      <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
+    </div>
+
+    <!-- User Navigation -->
+    <div id="userNav" class="nav-tabs hidden">
+      <button class="nav-tab active" onclick="switchTab('userDashboard')">My Dashboard</button>
+      <button class="nav-tab" onclick="switchTab('userAppointments')">My Appointments</button>
+      <button class="nav-tab" onclick="switchTab('userResults')">My Results</button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Admin Dashboard Tab -->
+      <div id="dashboard" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">System Overview</h2>
+        
+        <div class="dashboard-grid">
+          <div class="stat-card" onclick="filterOrdersByStatus('')">
+            <h3>Total Tests Today</h3>
+            <div class="number" id="testsToday">0</div>
+            <div class="label">Scheduled collections</div>
+          </div>
+          <div class="stat-card success" onclick="filterOrdersByStatus('completed')">
+            <h3>Completed Tests</h3>
+            <div class="number" id="completedTests">0</div>
+            <div class="label">This month</div>
+          </div>
+          <div class="stat-card warning" onclick="filterOrdersByStatus('testing')">
+            <h3>Pending Results</h3>
+            <div class="number" id="pendingResults">0</div>
+            <div class="label">Awaiting MRO review</div>
+          </div>
+          <div class="stat-card info" onclick="switchTab('orders')">
+            <h3>Active Orders</h3>
+            <div class="number" id="activeOrders">0</div>
+            <div class="label">In progress</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 20px;">Recent Activity</h3>
+        <div class="timeline" id="activityTimeline">
+          <!-- Timeline items will be populated here -->
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 20px;">Quick Actions</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="quickNewOrder()">
+            ➕ New Test Order
+          </button>
+          <button class="btn btn-success" onclick="switchTab('collection')">
+            🧪 Record Collection
+          </button>
+          <button class="btn btn-warning" onclick="switchTab('results')">
+            📊 Enter Results
+          </button>
+          <button class="btn btn-secondary" onclick="switchTab('reports')">
+            📄 Generate Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Test Orders Tab -->
+      <div id="orders" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+          <h2 style="color: var(--dark);">Test Orders</h2>
+          <button class="btn btn-primary" id="newOrderBtn" onclick="openModal('orderModal')">
+            ➕ New Test Order
+          </button>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Search by order number, donor name..." id="orderSearch" oninput="filterOrders()">
+          <select id="orderStatusFilter" onchange="filterOrders()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="collected">Collected</option>
+            <option value="testing">Testing</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn btn-secondary" onclick="filterOrders()">🔍 Filter</button>
+        </div>
+
+        <div class="table-responsive">
+          <table id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order Number</th>
+                <th>Donor</th>
+                <th>Company</th>
+                <th>Test Panel</th>
+                <th>Scheduled Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Orders will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Specimen Collection Tab -->
+      <div id="collection" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">Specimen Collection</h2>
+
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <div>
+            <strong>Chain of Custody Protocol:</strong> Ensure all specimens are properly sealed, labeled, and documented per DOH guidelines.
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Order Number / Barcode</label>
+            <input type="text" id="collectionOrderNumber" placeholder="Scan or enter order number" oninput="loadOrderForCollection()">
+          </div>
+          <div class="form-group">
+            <label>Donor Name</label>
+            <input type="text" id="collectionDonorName" readonly placeholder="Auto-filled">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Specimen ID</label>
+            <input type="text" id="specimenId" placeholder="Auto-generated" readonly>
+          </div>
+          <div class="form-group">
+            <label class="required">Collection Date & Time</label>
+            <input type="datetime-local" id="collectionDateTime">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Specimen Type</label>
+            <select id="specimenType">
+              <option value="urine">Urine</option>
+              <option value="blood">Blood</option>
+              <option value="saliva">Saliva</option>
+              <option value="hair">Hair</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Temperature (°C)</label>
+            <input type="number" id="specimenTemp" step="0.1" placeholder="32.0 - 38.0">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Volume (mL)</label>
+            <input type="number" id="specimenVolume" placeholder="Minimum 30mL">
+          </div>
+          <div class="form-group">
+            <label>Specimen Appearance</label>
+            <select id="specimenAppearance">
+              <option value="clear">Clear/Normal</option>
+              <option value="cloudy">Cloudy</option>
+              <option value="discolored">Discolored</option>
+              <option value="unusual">Unusual</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Collection Notes</label>
+          <textarea id="collectionNotes" placeholder="Enter any observations or special circumstances..."></textarea>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="observedCollection">
+            <span>Observed Collection (Required for reasonable suspicion)</span>
+          </label>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px;">
+          <button class="btn btn-primary" onclick="recordCollection()">
+            ✅ Record Collection
+          </button>
+          <button class="btn btn-secondary" onclick="printChainOfCustody()">
+            🖨️ Print Chain of Custody
+          </button>
+          <button class="btn btn-secondary" onclick="clearCollectionForm()">
+            🔄 Clear Form
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Results & MRO Tab -->
+      <div id="results" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">Test Results & MRO Review</h2>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Search by order number or specimen ID..." id="resultsSearch" oninput="filterResults()">
+          <select id="resultsFilter" onchange="filterResults()">
+            <option value="">All Results</option>
+            <option value="collected">Pending Results Entry</option>
+            <option value="testing">Pending MRO Review</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button class="btn btn-primary" onclick="openModal('resultsModal')">
+            ➕ Enter Results
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Order Number</th>
+                <th>Specimen ID</th>
+                <th>Donor</th>
+                <th>Collection Date</th>
+                <th>Panel</th>
+                <th>Status</th>
+                <th>Result</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+              <!-- Results will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin DOH Reports Tab -->
+      <div id="reports" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">DOH Compliance Reports</h2>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <h3>This Month</h3>
+            <div class="number" id="monthlyTotal">0</div>
+            <div class="label">Total tests conducted</div>
+          </div>
+          <div class="stat-card success">
+            <h3>Negative Results</h3>
+            <div class="number" id="negativePercent">0%</div>
+            <div class="label">of total tests</div>
+          </div>
+          <div class="stat-card warning">
+            <h3>Positive Results</h3>
+            <div class="number" id="positivePercent">0%</div>
+            <div class="label">of total tests</div>
+          </div>
+          <div class="stat-card info">
+            <h3>Next Report Due</h3>
+            <div class="number" style="font-size: 18px;">Dec 31</div>
+            <div class="label">Quarterly submission</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 20px;">Generate Reports</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Report Type</label>
+            <select id="reportType">
+              <option value="monthly">Monthly Summary</option>
+              <option value="quarterly">Quarterly Compliance</option>
+              <option value="annual">Annual Report</option>
+              <option value="custom">Custom Date Range</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Period</label>
+            <input type="month" id="reportPeriod" value="2025-10">
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+          <button class="btn btn-primary" onclick="generateDOHReport()">
+            📊 Generate Report
+          </button>
+          <button class="btn btn-success" onclick="submitToDOH()">
+            📤 Submit to DOH
+          </button>
+          <button class="btn btn-secondary" onclick="downloadReport()">
+            💾 Download PDF
+          </button>
+        </div>
+
+        <h3 style="margin-top: 40px; margin-bottom: 20px;">Submission History</h3>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Report Type</th>
+                <th>Period</th>
+                <th>Submitted Date</th>
+                <th>DOH Reference</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="submissionHistory">
+              <tr>
+                <td>Monthly Summary</td>
+                <td>September 2025</td>
+                <td>2025-10-05</td>
+                <td>DOH-2025-09-12345</td>
+                <td><span class="badge badge-success">Acknowledged</span></td>
+                <td>
+                  <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="viewReport('DOH-2025-09-12345')">View</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Settings Tab -->
+      <div id="settings" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">System Settings</h2>
+
+        <h3 style="margin-bottom: 15px;">Collection Sites</h3>
+        <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="openModal('siteModal')">
+          ➕ Add Collection Site
+        </button>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Site Code</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>DOH License</th>
+                <th>License Expiry</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sitesTableBody">
+              <!-- Sites will be populated here -->
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Test Panels</h3>
+        <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="openModal('panelModal')">
+          ➕ Add Test Panel
+        </button>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Panel Code</th>
+                <th>Name</th>
+                <th>Specimen Type</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="panelsTableBody">
+              <!-- Panels will be populated here -->
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Companies</h3>
+        <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="openModal('companyModal')">
+          ➕ Add Company
+        </button>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Company Code</th>
+                <th>Company Name</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="companiesTableBody">
+              <!-- Companies will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USER DASHBOARD -->
+      <div id="userDashboard" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">Welcome to Your Dashboard</h2>
+        
+        <div class="dashboard-grid">
+          <div class="stat-card" onclick="switchTab('userAppointments')">
+            <h3>Upcoming Tests</h3>
+            <div class="number" id="userUpcomingTests">0</div>
+            <div class="label">Scheduled appointments</div>
+          </div>
+          <div class="stat-card success">
+            <h3>Completed Tests</h3>
+            <div class="number" id="userCompletedTests">0</div>
+            <div class="label">All time</div>
+          </div>
+          <div class="stat-card info" onclick="switchTab('userResults')">
+            <h3>Available Results</h3>
+            <div class="number" id="userAvailableResults">0</div>
+            <div class="label">Ready to view</div>
+          </div>
+          <div class="stat-card warning">
+            <h3>Pending Tests</h3>
+            <div class="number" id="userPendingTests">0</div>
+            <div class="label">Awaiting results</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 20px;">Next Appointment</h3>
+        <div id="nextAppointment">
+          <!-- Next appointment will be shown here -->
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 20px;">Important Information</h3>
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <div>
+            <strong>Before Your Test:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+              <li>Bring a valid ID</li>
+              <li>Arrive 15 minutes before scheduled time</li>
+              <li>Stay hydrated but avoid excessive water intake</li>
+              <li>Inform the collector of any medications you're taking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- USER APPOINTMENTS -->
+      <div id="userAppointments" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">My Appointments</h2>
+
+        <div id="userAppointmentsList">
+          <!-- Appointments will be populated here -->
+        </div>
+      </div>
+
+      <!-- USER RESULTS -->
+      <div id="userResults" class="tab-pane">
+        <h2 style="margin-bottom: 25px; color: var(--dark);">My Test Results</h2>
+
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <div>
+            <strong>Privacy Notice:</strong> Your test results are confidential and can only be viewed by you and authorized personnel.
+          </div>
+        </div>
+
+        <div id="userResultsList">
+          <!-- Results will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Order Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Test Order</h3>
+        <span class="close" onclick="closeModal('orderModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Company</label>
+            <select id="modalCompany">
+              <option value="">Select company</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="required">Order Type</label>
+            <select id="modalOrderType">
+              <option value="pre_employment">Pre-Employment</option>
+              <option value="random">Random</option>
+              <option value="post_accident">Post-Accident</option>
+              <option value="reasonable_suspicion">Reasonable Suspicion</option>
+              <option value="return_to_duty">Return to Duty</option>
+              <option value="follow_up">Follow-Up</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Donor First Name</label>
+            <input type="text" id="modalDonorFirstName">
+          </div>
+          <div class="form-group">
+            <label class="required">Donor Last Name</label>
+            <input type="text" id="modalDonorLastName">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Donor Email</label>
+            <input type="email" id="modalDonorEmail">
+          </div>
+          <div class="form-group">
+            <label>Donor Phone</label>
+            <input type="tel" id="modalDonorPhone">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Test Panel</label>
+            <select id="modalTestPanel">
+              <option value="">Select test panel</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="required">Collection Site</label>
+            <select id="modalCollectionSite">
+              <option value="">Select collection site</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Scheduled Date & Time</label>
+            <input type="datetime-local" id="modalScheduledDate">
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="modalPriority">
+              <option value="routine">Routine</option>
+              <option value="urgent">Urgent</option>
+              <option value="stat">STAT</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Special Instructions</label>
+          <textarea id="modalInstructions" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('orderModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="createOrder()">Create Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Entry Modal -->
+  <div id="resultsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Enter Test Results</h3>
+        <span class="close" onclick="closeModal('resultsModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="required">Order Number</label>
+          <input type="text" id="modalResultOrderNumber" placeholder="Enter order number" oninput="loadOrderForResults()">
+        </div>
+
+        <div id="orderResultInfo" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+          <strong>Donor:</strong> <span id="resultDonorName"></span><br>
+          <strong>Panel:</strong> <span id="resultPanelName"></span><br>
+          <strong>Collection Date:</strong> <span id="resultCollectionDate"></span>
+        </div>
+
+        <h4 style="margin: 20px 0 15px 0;">Screening Results</h4>
+        <div id="substanceResults">
+          <div class="form-group">
+            <label>Marijuana (THC)</label>
+            <select class="substance-result" data-substance="THC">
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="dilute">Dilute</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cocaine (COC)</label>
+            <select class="substance-result" data-substance="COC">
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="dilute">Dilute</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Methamphetamine (MAMP)</label>
+            <select class="substance-result" data-substance="MAMP">
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="dilute">Dilute</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Opiates (OPI)</label>
+            <select class="substance-result" data-substance="OPI">
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="dilute">Dilute</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Amphetamine (AMP)</label>
+            <select class="substance-result" data-substance="AMP">
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="dilute">Dilute</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Technical Remarks</label>
+          <textarea id="modalTechnicalRemarks" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('resultsModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveResults()">Save Results</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Management Modal -->
+  <div id="siteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Collection Site</h3>
+        <span class="close" onclick="closeModal('siteModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Site Code</label>
+            <input type="text" id="modalSiteCode">
+          </div>
+          <div class="form-group">
+            <label class="required">Site Name</label>
+            <input type="text" id="modalSiteName">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">DOH License Number</label>
+            <input type="text" id="modalDOHLicense">
+          </div>
+          <div class="form-group">
+            <label class="required">License Expiry</label>
+            <input type="date" id="modalLicenseExpiry">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="required">Address</label>
+          <textarea id="modalSiteAddress" rows="2"></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="modalSitePhone">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="modalSiteEmail">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('siteModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSite()">Save Site</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Modal -->
+  <div id="panelModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Test Panel</h3>
+        <span class="close" onclick="closeModal('panelModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Panel Code</label>
+            <input type="text" id="modalPanelCode">
+          </div>
+          <div class="form-group">
+            <label class="required">Panel Name</label>
+            <input type="text" id="modalPanelName">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Specimen Type</label>
+            <select id="modalPanelSpecimen">
+              <option value="urine">Urine</option>
+              <option value="blood">Blood</option>
+              <option value="saliva">Saliva</option>
+              <option value="hair">Hair</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="required">Test Category</label>
+            <select id="modalPanelCategory">
+              <option value="pre_employment">Pre-Employment</option>
+              <option value="random">Random</option>
+              <option value="post_accident">Post-Accident</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Price (₱)</label>
+            <input type="number" id="modalPanelPrice" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Turnaround Time (hours)</label>
+            <input type="number" id="modalPanelTAT" value="48">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('panelModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="savePanel()">Save Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company Modal -->
+  <div id="companyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Company</h3>
+        <span class="close" onclick="closeModal('companyModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">Company Code</label>
+            <input type="text" id="modalCompanyCode">
+          </div>
+          <div class="form-group">
+            <label class="required">Company Name</label>
+            <input type="text" id="modalCompanyName">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input type="text" id="modalCompanyContact">
+          </div>
+          <div class="form-group">
+            <label>Contact Email</label>
+            <input type="email" id="modalCompanyEmail">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <textarea id="modalCompanyAddress" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('companyModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCompany()">Save Company</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Order Details Modal -->
+  <div id="viewOrderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Order Details</h3>
+        <span class="close" onclick="closeModal('viewOrderModal')">&times;</span>
+      </div>
+      <div class="modal-body" id="orderDetailsContent">
+        <!-- Order details will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('viewOrderModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentUser = null;
+    let orders = [];
+    let collections = [];
+    let results = [];
+    let sites = [];
+    let panels = [];
+    let companies = [];
+    let users = [];
+
+    // Initialize app
+    function initApp() {
+      loadSampleData();
+      setCurrentDateTime();
+    }
+
+    // Load sample data
+    function loadSampleData() {
+      // Sample users
+      users = [
+        { id: 1, email: 'admin@doh.ph', password: 'admin123', role: 'admin', firstName: 'Admin', lastName: 'User' },
+        { id: 2, email: 'user@test.ph', password: 'user123', role: 'client', firstName: 'Juan', lastName: 'Dela Cruz' }
+      ];
+
+      companies = [
+        { id: 1, code: 'ABC001', name: 'ABC Corporation', contact: 'John Manager', email: 'john@abc.com', address: 'Makati City', status: 'active' },
+        { id: 2, code: 'XYZ002', name: 'XYZ Industries', contact: 'Maria Director', email: 'maria@xyz.com', address: 'Quezon City', status: 'active' },
+        { id: 3, code: 'TECH003', name: 'Tech Solutions Inc.', contact: 'Pedro CEO', email: 'pedro@tech.com', address: 'BGC, Taguig', status: 'active' }
+      ];
+
+      sites = [
+        {
+          id: 1,
+          code: 'MNL-001',
+          name: 'Manila Medical Center',
+          address: 'Ermita, Manila',
+          license: 'DOH-NCR-2024-001',
+          expiry: '2026-12-31',
+          phone: '(02) 1234-5678',
+          email: 'info@manilamed.ph',
+          status: 'active'
+        },
+        {
+          id: 2,
+          code: 'QC-002',
+          name: 'Quezon City Diagnostic',
+          address: 'Quezon Avenue, QC',
+          license: 'DOH-NCR-2024-002',
+          expiry: '2026-06-30',
+          phone: '(02) 8765-4321',
+          email: 'lab@qcdiagnostic.ph',
+          status: 'active'
+        }
+      ];
+
+      panels = [
+        {
+          id: 1,
+          code: 'DOH-5PANEL',
+          name: 'DOH 5-Panel Drug Screen',
+          specimenType: 'urine',
+          category: 'pre_employment',
+          price: 1500,
+          tat: 48,
+          status: 'active'
+        },
+        {
+          id: 2,
+          code: 'DOH-10PANEL',
+          name: 'DOH 10-Panel Extended',
+          specimenType: 'urine',
+          category: 'random',
+          price: 2500,
+          tat: 48,
+          status: 'active'
+        }
+      ];
+
+      orders = [
+        {
+          id: 1,
+          orderNumber: 'ORD-2025-001',
+          donorFirstName: 'Juan',
+          donorLastName: 'Dela Cruz',
+          donorEmail: 'user@test.ph',
+          userId: 2,
+          companyId: 1,
+          company: 'ABC Corporation',
+          panelId: 1,
+          panel: 'DOH 5-Panel Drug Screen',
+          siteId: 1,
+          site: 'Manila Medical Center',
+          scheduledDate: '2025-10-28T09:00',
+          orderType: 'pre_employment',
+          priority: 'routine',
+          status: 'scheduled',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 2,
+          orderNumber: 'ORD-2025-002',
+          donorFirstName: 'Juan',
+          donorLastName: 'Dela Cruz',
+          donorEmail: 'user@test.ph',
+          userId: 2,
+          companyId: 2,
+          company: 'XYZ Industries',
+          panelId: 1,
+          panel: 'DOH 5-Panel Drug Screen',
+          siteId: 2,
+          site: 'Quezon City Diagnostic',
+          scheduledDate: '2025-10-27T14:00',
+          orderType: 'random',
+          priority: 'routine',
+          status: 'collected',
+          specimenId: 'SPEC-1730000001',
+          collectionDate: '2025-10-27T14:15',
+          createdAt: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+          id: 3,
+          orderNumber: 'ORD-2025-003',
+          donorFirstName: 'Juan',
+          donorLastName: 'Dela Cruz',
+          donorEmail: 'user@test.ph',
+          userId: 2,
+          companyId: 1,
+          company: 'ABC Corporation',
+          panelId: 2,
+          panel: 'DOH 10-Panel Extended',
+          siteId: 1,
+          site: 'Manila Medical Center',
+          scheduledDate: '2025-10-15T10:00',
+          orderType: 'pre_employment',
+          priority: 'routine',
+          status: 'completed',
+          specimenId: 'SPEC-1729800000',
+          collectionDate: '2025-10-15T10:20',
+          finalResult: 'negative',
+          resultDate: '2025-10-17T15:30',
+          createdAt: new Date(Date.now() - 1036800000).toISOString()
+        }
+      ];
+    }
+
+    // Login functionality
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        currentUser = user;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('currentUser').textContent = `${user.firstName} ${user.lastName}`;
+        
+        if (user.role === 'admin') {
+          document.getElementById('userRole').textContent = 'System Administrator';
+          document.getElementById('adminNav').classList.remove('hidden');
+          switchTab('dashboard');
+          updateDashboard();
+          loadOrders();
+          loadSites();
+          loadPanels();
+          loadCompanies();
+          loadResults();
+        } else {
+          document.getElementById('userRole').textContent = 'Client';
+          document.getElementById('userNav').classList.remove('hidden');
+          switchTab('userDashboard');
+          loadUserDashboard();
+        }
+        
+        showAlert('success', `Welcome, ${user.firstName}!`);
+      } else {
+        showAlert('danger', 'Invalid email or password');
+      }
+    });
+
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event?.target?.classList.add('active');
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+      if (modalId === 'orderModal') {
+        populateOrderModal();
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function populateOrderModal() {
+      const companySelect = document.getElementById('modalCompany');
+      companySelect.innerHTML = '<option value="">Select company</option>';
+      companies.forEach(company => {
+        companySelect.innerHTML += `<option value="${company.id}">${company.name}</option>`;
+      });
+
+      const siteSelect = document.getElementById('modalCollectionSite');
+      siteSelect.innerHTML = '<option value="">Select collection site</option>';
+      sites.forEach(site => {
+        siteSelect.innerHTML += `<option value="${site.id}">${site.name} - ${site.address}</option>`;
+      });
+
+      const panelSelect = document.getElementById('modalTestPanel');
+      panelSelect.innerHTML = '<option value="">Select test panel</option>';
+      panels.forEach(panel => {
+        panelSelect.innerHTML += `<option value="${panel.id}">${panel.name} - ₱${panel.price}</option>`;
+      });
+    }
+
+    // ADMIN FUNCTIONS
+
+    // Update dashboard
+    function updateDashboard() {
+      const today = new Date().toISOString().split('T')[0];
+      const thisMonth = new Date().toISOString().slice(0, 7);
+      
+      document.getElementById('testsToday').textContent = orders.filter(o => o.scheduledDate.startsWith(today)).length;
+      document.getElementById('completedTests').textContent = orders.filter(o => o.status === 'completed' && o.createdAt.startsWith(thisMonth)).length;
+      document.getElementById('pendingResults').textContent = orders.filter(o => o.status === 'testing').length;
+      document.getElementById('activeOrders').textContent = orders.filter(o => ['scheduled', 'collected', 'testing'].includes(o.status)).length;
+
+      // Update reports stats
+      const monthlyTests = orders.filter(o => o.createdAt.startsWith(thisMonth));
+      const negativeResults = orders.filter(o => o.finalResult === 'negative' && o.createdAt.startsWith(thisMonth));
+      const positiveResults = orders.filter(o => o.finalResult === 'positive' && o.createdAt.startsWith(thisMonth));
+      
+      document.getElementById('monthlyTotal').textContent = monthlyTests.length;
+      const negPercent = monthlyTests.length > 0 ? Math.round((negativeResults.length / monthlyTests.length) * 100) : 0;
+      const posPercent = monthlyTests.length > 0 ? Math.round((positiveResults.length / monthlyTests.length) * 100) : 0;
+      document.getElementById('negativePercent').textContent = negPercent + '%';
+      document.getElementById('positivePercent').textContent = posPercent + '%';
+
+      const timeline = document.getElementById('activityTimeline');
+      const recentOrders = orders.slice(0, 5);
+      timeline.innerHTML = '';
+      
+      recentOrders.forEach(order => {
+        const timeAgo = getTimeAgo(new Date(order.createdAt));
+        timeline.innerHTML += `
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <strong>${getStatusText(order.status)}</strong> - ${order.orderNumber}
+              <br><small style="color: var(--gray);">${order.donorFirstName} ${order.donorLastName} - ${order.company}</small>
+              <div style="color: var(--gray); font-size: 13px; margin-top: 5px;">${timeAgo}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function getStatusText(status) {
+      const statusTexts = {
+        'pending': 'Order created',
+        'scheduled': 'Order scheduled',
+        'collected': 'Specimen collected',
+        'testing': 'Testing in progress',
+        'completed': 'Results completed',
+        'cancelled': 'Order cancelled'
+      };
+      return statusTexts[status] || status;
+    }
+
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      const intervals = {
+        year: 31536000,
+        month: 2592000,
+        week: 604800,
+        day: 86400,
+        hour: 3600,
+        minute: 60
+      };
+
+      for (let [name, seconds_in_interval] of Object.entries(intervals)) {
+        const interval = Math.floor(seconds / seconds_in_interval);
+        if (interval >= 1) {
+          return interval === 1 ? `1 ${name} ago` : `${interval} ${name}s ago`;
+        }
+      }
+      return 'Just now';
+    }
+
+    // Load orders table
+    function loadOrders() {
+      const tbody = document.getElementById('ordersTableBody');
+      tbody.innerHTML = '';
+      
+      orders.forEach(order => {
+        const statusBadge = getStatusBadge(order.status);
+        const scheduledDate = new Date(order.scheduledDate).toLocaleString();
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${order.orderNumber}</strong></td>
+            <td>${order.donorFirstName} ${order.donorLastName}</td>
+            <td>${order.company}</td>
+            <td>${order.panel}</td>
+            <td>${scheduledDate}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="viewOrderDetails(${order.id})">View</button>
+              ${order.status === 'scheduled' ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="cancelOrder(${order.id})">Cancel</button>` : ''}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Filter orders
+    function filterOrders() {
+      const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+      const statusFilter = document.getElementById('orderStatusFilter').value;
+      
+      const filteredOrders = orders.filter(order => {
+        const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm) || 
+                            `${order.donorFirstName} ${order.donorLastName}`.toLowerCase().includes(searchTerm);
+        const matchesStatus = !statusFilter || order.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+      
+      const tbody = document.getElementById('ordersTableBody');
+      tbody.innerHTML = '';
+      
+      filteredOrders.forEach(order => {
+        const statusBadge = getStatusBadge(order.status);
+        const scheduledDate = new Date(order.scheduledDate).toLocaleString();
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${order.orderNumber}</strong></td>
+            <td>${order.donorFirstName} ${order.donorLastName}</td>
+            <td>${order.company}</td>
+            <td>${order.panel}</td>
+            <td>${scheduledDate}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="viewOrderDetails(${order.id})">View</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function filterOrdersByStatus(status) {
+      document.getElementById('orderStatusFilter').value = status;
+      switchTab('orders');
+      filterOrders();
+    }
+
+    // Get status badge
+    function getStatusBadge(status) {
+      const badges = {
+        'pending': '<span class="badge badge-secondary">Pending</span>',
+        'scheduled': '<span class="badge badge-info">Scheduled</span>',
+        'collected': '<span class="badge badge-warning">Collected</span>',
+        'testing': '<span class="badge badge-warning">Testing</span>',
+        'completed': '<span class="badge badge-success">Completed</span>',
+        'cancelled': '<span class="badge badge-danger">Cancelled</span>'
+      };
+      return badges[status] || status;
+    }
+
+    // View order details
+    function viewOrderDetails(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const content = document.getElementById('orderDetailsContent');
+      content.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <h4 style="margin-bottom: 15px;">Order Information</h4>
+            <p><strong>Order Number:</strong> ${order.orderNumber}</p>
+            <p><strong>Status:</strong> ${getStatusBadge(order.status)}</p>
+            <p><strong>Order Type:</strong> ${order.orderType.replace('_', ' ')}</p>
+            <p><strong>Priority:</strong> ${order.priority}</p>
+            <p><strong>Created:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
+          </div>
+          <div>
+            <h4 style="margin-bottom: 15px;">Donor Information</h4>
+            <p><strong>Name:</strong> ${order.donorFirstName} ${order.donorLastName}</p>
+            <p><strong>Email:</strong> ${order.donorEmail || 'N/A'}</p>
+            <p><strong>Company:</strong> ${order.company}</p>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <h4 style="margin-bottom: 15px;">Test Information</h4>
+          <p><strong>Panel:</strong> ${order.panel}</p>
+          <p><strong>Collection Site:</strong> ${order.site}</p>
+          <p><strong>Scheduled:</strong> ${new Date(order.scheduledDate).toLocaleString()}</p>
+          ${order.specimenId ? `<p><strong>Specimen ID:</strong> ${order.specimenId}</p>` : ''}
+          ${order.collectionDate ? `<p><strong>Collection Date:</strong> ${new Date(order.collectionDate).toLocaleString()}</p>` : ''}
+          ${order.finalResult ? `<p><strong>Final Result:</strong> <span class="badge badge-${order.finalResult === 'negative' ? 'success' : 'danger'}">${order.finalResult.toUpperCase()}</span></p>` : ''}
+        </div>
+      `;
+      openModal('viewOrderModal');
+    }
+
+    // Cancel order
+    function cancelOrder(orderId) {
+      if (confirm('Are you sure you want to cancel this order?')) {
+        const order = orders.find(o => o.id === orderId);
+        if (order) {
+          order.status = 'cancelled';
+          loadOrders();
+          updateDashboard();
+          showAlert('success', `Order ${order.orderNumber} has been cancelled.`);
+        }
+      }
+    }
+
+    // Load sites
+    function loadSites() {
+      const tbody = document.getElementById('sitesTableBody');
+      tbody.innerHTML = '';
+      
+      sites.forEach(site => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${site.code}</strong></td>
+            <td>${site.name}</td>
+            <td>${site.address}</td>
+            <td>${site.license}</td>
+            <td>${site.expiry}</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="editSite(${site.id})">Edit</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Load panels
+    function loadPanels() {
+      const tbody = document.getElementById('panelsTableBody');
+      tbody.innerHTML = '';
+      
+      panels.forEach(panel => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${panel.code}</strong></td>
+            <td>${panel.name}</td>
+            <td>${panel.specimenType}</td>
+            <td>${panel.category.replace('_', ' ')}</td>
+            <td>₱${panel.price.toFixed(2)}</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="editPanel(${panel.id})">Edit</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Load companies
+    function loadCompanies() {
+      const tbody = document.getElementById('companiesTableBody');
+      tbody.innerHTML = '';
+      
+      companies.forEach(company => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${company.code}</strong></td>
+            <td>${company.name}</td>
+            <td>${company.contact}</td>
+            <td>${company.email}</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="editCompany(${company.id})">Edit</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Load results
+    function loadResults() {
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+      
+      orders.forEach(order => {
+        if (order.status === 'collected' || order.status === 'testing' || order.status === 'completed') {
+          const resultBadge = order.finalResult ? 
+            `<span class="badge badge-${order.finalResult === 'negative' ? 'success' : 'danger'}">${order.finalResult.toUpperCase()}</span>` : 
+            '<span class="badge badge-secondary">Pending</span>';
+          
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${order.orderNumber}</strong></td>
+              <td>${order.specimenId || 'N/A'}</td>
+              <td>${order.donorFirstName} ${order.donorLastName}</td>
+              <td>${order.collectionDate ? new Date(order.collectionDate).toLocaleString() : 'N/A'}</td>
+              <td>${order.panel}</td>
+              <td>${getStatusBadge(order.status)}</td>
+              <td>${resultBadge}</td>
+              <td>
+                ${!order.finalResult && order.status === 'collected' ? 
+                  `<button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="enterResultsForOrder('${order.orderNumber}')">Enter Results</button>` : 
+                  ''}
+                ${order.finalResult ? 
+                  `<button class="btn btn-info" style="padding: 6px 12px; font-size: 12px;" onclick="viewResults(${order.id})">View Details</button>` : 
+                  ''}
+                ${order.finalResult ? 
+                  `<button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="downloadResultPDF(${order.id})">Download</button>` : 
+                  ''}
+              </td>
+            </tr>
+          `;
+        }
+      });
+      
+      if (tbody.innerHTML === '') {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray);">
+              <div style="font-size: 48px; margin-bottom: 15px;">🔬</div>
+              <div style="font-size: 16px;">No specimens collected yet</div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function filterResults() {
+      const searchTerm = document.getElementById('resultsSearch').value.toLowerCase();
+      const statusFilter = document.getElementById('resultsFilter').value;
+      
+      const filteredOrders = orders.filter(order => {
+        const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm) || 
+                            (order.specimenId && order.specimenId.toLowerCase().includes(searchTerm));
+        const matchesStatus = !statusFilter || order.status === statusFilter;
+        const hasCollection = order.status === 'collected' || order.status === 'testing' || order.status === 'completed';
+        return matchesSearch && matchesStatus && hasCollection;
+      });
+      
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+      
+      filteredOrders.forEach(order => {
+        const resultBadge = order.finalResult ? 
+          `<span class="badge badge-${order.finalResult === 'negative' ? 'success' : 'danger'}">${order.finalResult.toUpperCase()}</span>` : 
+          '<span class="badge badge-secondary">Pending</span>';
+        
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${order.orderNumber}</strong></td>
+            <td>${order.specimenId || 'N/A'}</td>
+            <td>${order.donorFirstName} ${order.donorLastName}</td>
+            <td>${order.collectionDate ? new Date(order.collectionDate).toLocaleString() : 'N/A'}</td>
+            <td>${order.panel}</td>
+            <td>${getStatusBadge(order.status)}</td>
+            <td>${resultBadge}</td>
+            <td>
+              ${!order.finalResult && order.status === 'collected' ? 
+                `<button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="enterResultsForOrder('${order.orderNumber}')">Enter Results</button>` : 
+                ''}
+              ${order.finalResult ? 
+                `<button class="btn btn-info" style="padding: 6px 12px; font-size: 12px;" onclick="viewResults(${order.id})">View Details</button>` : 
+                ''}
+            </td>
+          </tr>
+        `;
+      });
+      
+      if (tbody.innerHTML === '') {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray);">
+              <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
+              <div style="font-size: 16px;">No results found matching your criteria</div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function enterResults(orderNumber) {
+      document.getElementById('modalResultOrderNumber').value = orderNumber;
+      openModal('resultsModal');
+      loadOrderForResults();
+    }
+
+    function enterResultsForOrder(orderNumber) {
+      document.getElementById('modalResultOrderNumber').value = orderNumber;
+      openModal('resultsModal');
+      loadOrderForResults();
+    }
+
+    function loadOrderForResults() {
+      const orderNumber = document.getElementById('modalResultOrderNumber').value;
+      const order = orders.find(o => o.orderNumber === orderNumber);
+      
+      if (order && order.status === 'collected') {
+        document.getElementById('orderResultInfo').style.display = 'block';
+        document.getElementById('resultDonorName').textContent = `${order.donorFirstName} ${order.donorLastName}`;
+        document.getElementById('resultPanelName').textContent = order.panel;
+        document.getElementById('resultCollectionDate').textContent = new Date(order.collectionDate).toLocaleString();
+      } else {
+        document.getElementById('orderResultInfo').style.display = 'none';
+        if (order && order.status !== 'collected') {
+          showAlert('warning', 'This order is not ready for results entry. Status: ' + order.status);
+        }
+      }
+    }
+
+    // Create order
+    function createOrder() {
+      const companyId = parseInt(document.getElementById('modalCompany').value);
+      const company = companies.find(c => c.id === companyId);
+      const orderType = document.getElementById('modalOrderType').value;
+      const firstName = document.getElementById('modalDonorFirstName').value.trim();
+      const lastName = document.getElementById('modalDonorLastName').value.trim();
+      const email = document.getElementById('modalDonorEmail').value.trim();
+      const panelId = parseInt(document.getElementById('modalTestPanel').value);
+      const panel = panels.find(p => p.id === panelId);
+      const siteId = parseInt(document.getElementById('modalCollectionSite').value);
+      const site = sites.find(s => s.id === siteId);
+      const scheduledDate = document.getElementById('modalScheduledDate').value;
+      const priority = document.getElementById('modalPriority').value;
+      const instructions = document.getElementById('modalInstructions').value;
+
+      if (!companyId || !firstName || !lastName || !panelId || !siteId || !scheduledDate) {
+        showAlert('danger', 'Please fill in all required fields');
+        return;
+      }
+
+      const newOrder = {
+        id: orders.length + 1,
+        orderNumber: `ORD-2025-${String(orders.length + 1).padStart(3, '0')}`,
+        donorFirstName: firstName,
+        donorLastName: lastName,
+        donorEmail: email,
+        userId: null,
+        companyId: companyId,
+        company: company.name,
+        panelId: panelId,
+        panel: panel.name,
+        siteId: siteId,
+        site: site.name,
+        scheduledDate: scheduledDate,
+        orderType: orderType,
+        priority: priority,
+        instructions: instructions,
+        status: 'scheduled',
+        createdAt: new Date().toISOString()
+      };
+
+      orders.unshift(newOrder);
+      loadOrders();
+      updateDashboard();
+      closeModal('orderModal');
+      
+      showAlert('success', `Order ${newOrder.orderNumber} created successfully!`);
+      
+      // Clear form
+      document.getElementById('modalDonorFirstName').value = '';
+      document.getElementById('modalDonorLastName').value = '';
+      document.getElementById('modalDonorEmail').value = '';
+      document.getElementById('modalDonorPhone').value = '';
+      document.getElementById('modalInstructions').value = '';
+    }
+
+    function quickNewOrder() {
+      switchTab('orders');
+      setTimeout(() => openModal('orderModal'), 100);
+    }
+
+    // Load order for collection
+    function loadOrderForCollection() {
+      const orderNumber = document.getElementById('collectionOrderNumber').value.trim();
+      const order = orders.find(o => o.orderNumber === orderNumber && o.status === 'scheduled');
+      
+      if (order) {
+        document.getElementById('collectionDonorName').value = `${order.donorFirstName} ${order.donorLastName}`;
+        document.getElementById('specimenId').value = `SPEC-${Date.now()}`;
+      } else {
+        document.getElementById('collectionDonorName').value = '';
+        document.getElementById('specimenId').value = '';
+      }
+    }
+
+    // Record collection
+    function recordCollection() {
+      const orderNumber = document.getElementById('collectionOrderNumber').value.trim();
+      const specimenTemp = parseFloat(document.getElementById('specimenTemp').value);
+      const specimenVolume = parseFloat(document.getElementById('specimenVolume').value);
+      const specimenId = document.getElementById('specimenId').value;
+
+      if (!orderNumber) {
+        showAlert('danger', 'Please enter an order number');
+        return;
+      }
+
+      const order = orders.find(o => o.orderNumber === orderNumber);
+      if (!order) {
+        showAlert('danger', 'Order not found');
+        return;
+      }
+
+      if (order.status !== 'scheduled') {
+        showAlert('warning', 'This order has already been processed');
+        return;
+      }
+
+      if (specimenTemp && (specimenTemp < 32 || specimenTemp > 38)) {
+        if (!confirm('Temperature is outside acceptable range (32-38°C). Continue?')) {
+          return;
+        }
+      }
+
+      if (specimenVolume && specimenVolume < 30) {
+        showAlert('danger', 'Insufficient volume. Minimum 30mL required.');
+        return;
+      }
+
+      order.status = 'collected';
+      order.specimenId = specimenId;
+      order.collectionDate = document.getElementById('collectionDateTime').value;
+      
+      loadOrders();
+      loadResults();
+      updateDashboard();
+      
+      showAlert('success', `Specimen collected for ${orderNumber}. Chain of custody initiated.`);
+      clearCollectionForm();
+    }
+
+    function clearCollectionForm() {
+      document.getElementById('collectionOrderNumber').value = '';
+      document.getElementById('collectionDonorName').value = '';
+      document.getElementById('specimenId').value = '';
+      document.getElementById('specimenTemp').value = '';
+      document.getElementById('specimenVolume').value = '';
+      document.getElementById('collectionNotes').value = '';
+      document.getElementById('observedCollection').checked = false;
+      setCurrentDateTime();
+    }
+
+    // Save results
+    function saveResults() {
+      const orderNumber = document.getElementById('modalResultOrderNumber').value.trim();
+      
+      if (!orderNumber) {
+        showAlert('danger', 'Please enter an order number');
+        return;
+      }
+
+      const order = orders.find(o => o.orderNumber === orderNumber);
+      if (!order || order.status !== 'collected') {
+        showAlert('danger', 'Order not found or not ready for results');
+        return;
+      }
+
+      // Get all substance results
+      const substanceResults = document.querySelectorAll('.substance-result');
+      let allNegative = true;
+      
+      substanceResults.forEach(select => {
+        if (select.value === 'positive') {
+          allNegative = false;
+        }
+      });
+
+      order.status = 'completed';
+      order.finalResult = allNegative ? 'negative' : 'positive';
+      order.resultDate = new Date().toISOString();
+
+      loadOrders();
+      loadResults();
+      updateDashboard();
+      closeModal('resultsModal');
+      
+      showAlert('success', `Results saved for ${orderNumber}. Final result: ${order.finalResult.toUpperCase()}`);
+      
+      document.getElementById('modalResultOrderNumber').value = '';
+      document.getElementById('orderResultInfo').style.display = 'none';
+    }
+
+    // Save site
+    function saveSite() {
+      const code = document.getElementById('modalSiteCode').value.trim();
+      const name = document.getElementById('modalSiteName').value.trim();
+      const license = document.getElementById('modalDOHLicense').value.trim();
+      const expiry = document.getElementById('modalLicenseExpiry').value;
+      const address = document.getElementById('modalSiteAddress').value.trim();
+      const phone = document.getElementById('modalSitePhone').value.trim();
+      const email = document.getElementById('modalSiteEmail').value.trim();
+
+      if (!code || !name || !license || !expiry || !address) {
+        showAlert('danger', 'Please fill in all required fields');
+        return;
+      }
+
+      const newSite = {
+        id: sites.length + 1,
+        code: code,
+        name: name,
+        address: address,
+        license: license,
+        expiry: expiry,
+        phone: phone,
+        email: email,
+        status: 'active'
+      };
+
+      sites.push(newSite);
+      loadSites();
+      closeModal('siteModal');
+      
+      showAlert('success', `Collection site ${code} added successfully!`);
+      
+      // Clear form
+      document.getElementById('modalSiteCode').value = '';
+      document.getElementById('modalSiteName').value = '';
+      document.getElementById('modalDOHLicense').value = '';
+      document.getElementById('modalLicenseExpiry').value = '';
+      document.getElementById('modalSiteAddress').value = '';
+      document.getElementById('modalSitePhone').value = '';
+      document.getElementById('modalSiteEmail').value = '';
+    }
+
+    // Save panel
+    function savePanel() {
+      const code = document.getElementById('modalPanelCode').value.trim();
+      const name = document.getElementById('modalPanelName').value.trim();
+      const specimen = document.getElementById('modalPanelSpecimen').value;
+      const category = document.getElementById('modalPanelCategory').value;
+      const price = parseFloat(document.getElementById('modalPanelPrice').value);
+      const tat = parseInt(document.getElementById('modalPanelTAT').value);
+
+      if (!code || !name || !price) {
+        showAlert('danger', 'Please fill in all required fields');
+        return;
+      }
+
+      const newPanel = {
+        id: panels.length + 1,
+        code: code,
+        name: name,
+        specimenType: specimen,
+        category: category,
+        price: price,
+        tat: tat,
+        status: 'active'
+      };
+
+      panels.push(newPanel);
+      loadPanels();
+      closeModal('panelModal');
+      
+      showAlert('success', `Test panel ${code} added successfully!`);
+      
+      // Clear form
+      document.getElementById('modalPanelCode').value = '';
+      document.getElementById('modalPanelName').value = '';
+      document.getElementById('modalPanelPrice').value = '';
+      document.getElementById('modalPanelTAT').value = '48';
+    }
+
+    // Save company
+    function saveCompany() {
+      const code = document.getElementById('modalCompanyCode').value.trim();
+      const name = document.getElementById('modalCompanyName').value.trim();
+      const contact = document.getElementById('modalCompanyContact').value.trim();
+      const email = document.getElementById('modalCompanyEmail').value.trim();
+      const address = document.getElementById('modalCompanyAddress').value.trim();
+
+      if (!code || !name) {
+        showAlert('danger', 'Please fill in all required fields');
+        return;
+      }
+
+      const newCompany = {
+        id: companies.length + 1,
+        code: code,
+        name: name,
+        contact: contact,
+        email: email,
+        address: address,
+        status: 'active'
+      };
+
+      companies.push(newCompany);
+      loadCompanies();
+      closeModal('companyModal');
+      
+      showAlert('success', `Company ${code} added successfully!`);
+      
+      // Clear form
+      document.getElementById('modalCompanyCode').value = '';
+      document.getElementById('modalCompanyName').value = '';
+      document.getElementById('modalCompanyContact').value = '';
+      document.getElementById('modalCompanyEmail').value = '';
+      document.getElementById('modalCompanyAddress').value = '';
+    }
+
+    // Generate DOH report
+    function generateDOHReport() {
+      const reportType = document.getElementById('reportType').value;
+      const period = document.getElementById('reportPeriod').value;
+      
+      if (!period) {
+        showAlert('danger', 'Please select a reporting period');
+        return;
+      }
+
+      showAlert('info', `Generating ${reportType} report for ${period}...`);
+      
+      setTimeout(() => {
+        showAlert('success', 'Report generated successfully! Ready for review and submission.');
+      }, 1500);
+    }
+
+    // Submit to DOH
+    function submitToDOH() {
+      if (confirm('Submit this report to DOH? This action cannot be undone.')) {
+        showAlert('info', 'Submitting to DOH API...');
+        
+        setTimeout(() => {
+          const refNumber = `DOH-2025-${Math.floor(Math.random() * 90000) + 10000}`;
+          showAlert('success', `Report submitted successfully! DOH Reference: ${refNumber}`);
+        }, 2000);
+      }
+    }
+
+    // Download report
+    function downloadReport() {
+      showAlert('info', 'Preparing PDF download...');
+      setTimeout(() => {
+        showAlert('success', 'PDF report downloaded successfully!');
+      }, 1500);
+    }
+
+    // Set current date and time
+    function setCurrentDateTime() {
+      const now = new Date();
+      const formattedDateTime = now.toISOString().slice(0, 16);
+      document.getElementById('collectionDateTime').value = formattedDateTime;
+    }
+
+    // Show alert message
+    function showAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.innerHTML = `
+        <span>${type === 'success' ? '✓' : type === 'danger' ? '✗' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+        <div>${message}</div>
+      `;
+      
+      // Insert at the top of the content area
+      const content = document.querySelector('.content');
+      content.insertBefore(alertDiv, content.firstChild);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    // Logout function
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        currentUser = null;
+        document.getElementById('mainApp').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('loginForm').reset();
+        document.getElementById('adminNav').classList.add('hidden');
+        document.getElementById('userNav').classList.add('hidden');
+      }
+    }
+
+    // Initialize the app when the page loads
+    window.onload = initApp;
+  </script>
+</body>
+</html>
